@@ -1,0 +1,14 @@
+{
+    "name": "vaulty",
+    "version": "1.0.0",
+    "description": "Save your commands, use them later.",
+    "bin": {
+        "vaulty": "./bin/vaulty.exe"
+    },
+    "os": [
+        "win32"
+    ],
+    "engines": {
+        "node": ">=12"
+    }
+}
