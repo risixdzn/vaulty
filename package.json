@@ -5,9 +5,10 @@
     "bin": {
         "vaulty": "./bin/vaulty.exe"
     },
-    "os": [
-        "win32"
-    ],
+    "scripts": {
+        "build": "node scripts/build.js",
+        "publish": "npm run build && npm publish"
+    },
     "engines": {
         "node": ">=12"
     }
