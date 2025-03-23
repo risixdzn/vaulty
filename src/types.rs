@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
+use tabled::Tabled;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Tabled, Clone)]
 pub struct Command {
     pub hash: String,
     pub command: String,
