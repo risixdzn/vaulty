@@ -1,2 +1,2 @@
 pub mod add;
-pub use add::add;
+pub use add::{ add, interactive_add };

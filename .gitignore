@@ -1,1 +1,28 @@
-/target
+# Node.js
+node_modules/
+dist/
+build/
+bin/
+*.log
+*.env
+*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Rust
+target/
+Cargo.lock
+bin/
+*.rs.bk
+
+# Editor & OS files
+.DS_Store
+Thumbs.db
+
+# VSCode settings
+.vscode/
+
+# Rust coverage
+*.tar.gz
+*.zip

@@ -1,14 +1,15 @@
-use std::{fs, io};
+use std::{ fs, io };
 use colored::Colorize;
 use md5::compute;
-use tabled::{settings::Style, Table};
+use tabled::{ settings::Style, Table };
+use inquire::Text;
 
-use crate::{types::{Command, CommandList}, utils::padding};
+use crate::{ types::{ Command, CommandList }, utils::padding };
 
 /* Generates a 6 length hash to reference the commands */
 fn generate_hash(command: &str) -> String {
     let hash = format!("{:x}", compute(command));
-    return hash[..6].to_string()
+    return hash[..6].to_string();
 }
 
 /* 
@@ -17,15 +18,16 @@ fn generate_hash(command: &str) -> String {
 */
 pub fn add(command: &str, description: &str) -> io::Result<()> {
     /* Get the platform-specific app data directory */
-    let proj_dirs = directories::ProjectDirs::from(
-            "com",
-            "vaulty",
-            "vaulty")
+    let proj_dirs = directories::ProjectDirs
+        ::from("com", "vaulty", "vaulty")
         .expect("Failed to get project directories.");
 
     let data_dir = proj_dirs.data_dir();
     let file_path = data_dir.join("commands.json");
 
+    if !data_dir.exists() {
+        fs::create_dir_all(data_dir)?;
+    }
 
     let hash = generate_hash(command);
 
@@ -53,12 +55,26 @@ pub fn add(command: &str, description: &str) -> io::Result<()> {
     let mut table = Table::new(vec![new_command]);
     table.with(Style::rounded());
 
-    padding(vec![
-        "✔ Command added!".green().to_string(),
-        table.to_string(),
-        "\n👉 Use 'vaulty list' to see your stored commands.".yellow().to_string(),
-    ]);
+    padding(
+        vec![
+            "✔ Command added!".green().to_string(),
+            table.to_string(),
+            "\n👉 Use 'vaulty list' to see your stored commands.".yellow().to_string()
+        ]
+    );
 
-    return Ok(())
+    return Ok(());
 }
 
+pub fn interactive_add() -> io::Result<()> {
+    padding(vec!["Vaulty - Adding command".cyan().to_string()]);
+
+    let command = Text::new("Enter the command to be saved:")
+        .prompt()
+        .expect("Failed to prompt for command");
+    let description = Text::new("Enter a description for the command:")
+        .prompt()
+        .expect("Failed to prompt for description");
+
+    add(&command, &description)
+}
