@@ -12,6 +12,7 @@ fn main() {
         .subcommand(
             Command::new("save")
                 .about("Save a command to Vaulty.")
+                .alias("add")
                 .arg(
                     Arg::new("command")
                         .short('c')
@@ -27,7 +28,28 @@ fn main() {
                         .help("A short description of the command")
                 )
         )
-        .subcommand(Command::new("list").about("List all the commands stored in Vaulty."));
+        .subcommand(
+            Command::new("list").about("List all the commands stored in Vaulty.").alias("ls")
+        )
+        .subcommand(
+            Command::new("delete")
+                .about("Delete a stored command from Vaulty.")
+                .alias("del")
+                .alias("rm")
+                .arg(
+                    Arg::new("id")
+                        .value_parser(clap::value_parser!(String))
+                        .required(true)
+                        .help("The ID of the command to delete")
+                )
+                .arg(
+                    Arg::new("yes")
+                        .short('y')
+                        .long("yes")
+                        .action(clap::ArgAction::SetTrue) // Set 'yes' to true if -y is present
+                        .help("Confirm deletion without prompting")
+                )
+        );
 
     let matches = app.clone().get_matches();
 
@@ -50,6 +72,11 @@ fn main() {
             }
         }
         Some(("list", _)) => commands::list().expect("Failed to list commands"),
+        Some(("delete", sub_matches)) => {
+            let id = sub_matches.get_one::<String>("id").expect("Expected an id");
+            let confirm_deletion = sub_matches.get_one::<bool>("yes").unwrap_or(&false);
+            commands::delete(id, confirm_deletion).expect("Failed to delete command");
+        }
         _ => app.print_help().expect("Failed to print help"),
     }
 }

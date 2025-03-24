@@ -17,7 +17,12 @@ pub fn list() -> io::Result<()> {
     let file_path = data_dir.join("commands.json");
 
     if !data_dir.exists() || !file_path.exists() {
-        padded_println(vec!["⚠️ No commands found".yellow().to_string()]);
+        padded_println(
+            vec![
+                "⚠️ No commands found".yellow().to_string(),
+                "\n💡 Use 'vaulty save' to add a new command.".yellow().to_string()
+            ]
+        );
         return Ok(());
     }
 
@@ -25,6 +30,16 @@ pub fn list() -> io::Result<()> {
         let file_content = fs::read_to_string(&file_path)?;
         serde_json::from_str(&file_content)?
     };
+
+    if command_list.commands.len() == 0 {
+        padded_println(
+            vec![
+                "⚠️ No commands found".yellow().to_string(),
+                "\n💡 Use 'vaulty save' to add a new command.".yellow().to_string()
+            ]
+        );
+        return Ok(());
+    }
 
     /* Creates and displays a table with all the commands */
     let mut table = Table::new(command_list.commands);
