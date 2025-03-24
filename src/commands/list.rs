@@ -1,0 +1,42 @@
+use std::{ fs, io };
+use colored::*;
+use tabled::{ settings::Style, Table };
+
+use crate::{ types::CommandList, utils::padded_println };
+
+/* 
+    Lists all the commands stored in the command list
+*/
+pub fn list() -> io::Result<()> {
+    /* Get the platform-specific app data directory */
+    let proj_dirs = directories::ProjectDirs
+        ::from("com", "vaulty", "vaulty")
+        .expect("Failed to get project directories.");
+
+    let data_dir = proj_dirs.data_dir();
+    let file_path = data_dir.join("commands.json");
+
+    if !data_dir.exists() || !file_path.exists() {
+        padded_println(vec!["⚠️ No commands found".yellow().to_string()]);
+        return Ok(());
+    }
+
+    let command_list: CommandList = {
+        let file_content = fs::read_to_string(&file_path)?;
+        serde_json::from_str(&file_content)?
+    };
+
+    /* Creates and displays a table with all the commands */
+    let mut table = Table::new(command_list.commands);
+    table.with(Style::rounded());
+
+    padded_println(
+        vec![
+            "✔ Your saved commands:".green().to_string(),
+            table.to_string(),
+            "\n💡 Use 'vaulty pick <id>' to run a specific command.".yellow().to_string()
+        ]
+    );
+
+    return Ok(());
+}

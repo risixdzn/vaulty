@@ -10,8 +10,8 @@ fn main() {
         .version("1.0")
         .about("\nVaulty - Save your commands, use them later.".cyan().to_string())
         .subcommand(
-            Command::new("add")
-                .about("Add a new command to Vaulty.")
+            Command::new("save")
+                .about("Save a command to Vaulty.")
                 .arg(
                     Arg::new("command")
                         .short('c')
@@ -26,7 +26,8 @@ fn main() {
                         .value_parser(clap::value_parser!(String))
                         .help("A short description of the command")
                 )
-        );
+        )
+        .subcommand(Command::new("list").about("List all the commands stored in Vaulty."));
 
     let matches = app.clone().get_matches();
 
@@ -36,18 +37,19 @@ fn main() {
         - If not, it will prompt the user for input.
     */
     match matches.subcommand() {
-        Some(("add", sub_matches)) => {
+        Some(("save", sub_matches)) => {
             if
                 let (Some(command), Some(description)) = (
                     sub_matches.get_one::<String>("command"),
                     sub_matches.get_one::<String>("description"),
                 )
             {
-                commands::add(command, description).expect("Failed to add command");
+                commands::save(command, description).expect("Failed to add command");
             } else {
-                commands::interactive_add().expect("Failed to add command interactively");
+                commands::interactive_save().expect("Failed to add command interactively");
             }
         }
+        Some(("list", _)) => commands::list().expect("Failed to list commands"),
         _ => app.print_help().expect("Failed to print help"),
     }
 }

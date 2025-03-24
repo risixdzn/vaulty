@@ -1,6 +1,6 @@
 {
     "name": "vaulty",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "description": "Save your commands, use them later.",
     "bin": {
         "vaulty": "./bin/vaulty.exe"
@@ -9,6 +9,18 @@
         "build": "node scripts/build.js",
         "publish": "npm run build && npm publish"
     },
+    "files": [
+        "bin/",
+        "README.md"
+    ],
+    "os": [
+        "win32"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/risixdzn/vaulty.git"
+    },
+    "homepage": "https://vaulty.ricardo.gg",
     "engines": {
         "node": ">=12"
     }
