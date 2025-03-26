@@ -16,7 +16,7 @@ pub fn render_table<T: tabled::Tabled>(data: Vec<T>) -> String {
         .map(|(TermWidth(w), _)| w as usize)
         .unwrap_or(80);
 
-    // Define max wrap width (leave some padding)
+    /* Define max wrap width (leave some padding) */
     let wrap_width = term_width.saturating_sub(10);
 
     let mut table = Table::new(data);

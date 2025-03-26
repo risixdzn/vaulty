@@ -3,10 +3,7 @@ use colored::*;
 
 use crate::{ types::CommandList, utils::{ self, padded_println } };
 
-/* 
-    Lists all the commands stored in the command list
-*/
-pub fn list() -> io::Result<()> {
+pub fn get_commands() -> io::Result<CommandList> {
     /* Get the platform-specific app data directory */
     let proj_dirs = directories::ProjectDirs
         ::from("com", "vaulty", "vaulty")
@@ -22,13 +19,22 @@ pub fn list() -> io::Result<()> {
                 "\n💡 Use 'vaulty save' to add a new command.".yellow().to_string()
             ]
         );
-        return Ok(());
+        return Ok(CommandList { commands: Vec::new() });
     }
 
     let command_list: CommandList = {
         let file_content = fs::read_to_string(&file_path)?;
         serde_json::from_str(&file_content)?
     };
+
+    return Ok(command_list);
+}
+
+/* 
+    Lists all the commands stored in the command list
+*/
+pub fn list() -> io::Result<()> {
+    let command_list = get_commands()?;
 
     if command_list.commands.len() == 0 {
         padded_println(

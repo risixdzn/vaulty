@@ -39,7 +39,6 @@ fn main() {
                 .arg(
                     Arg::new("id")
                         .value_parser(clap::value_parser!(String))
-                        .required(true)
                         .help("The ID of the command to delete")
                 )
                 .arg(
@@ -73,9 +72,12 @@ fn main() {
         }
         Some(("list", _)) => commands::list().expect("Failed to list commands"),
         Some(("delete", sub_matches)) => {
-            let id = sub_matches.get_one::<String>("id").expect("Expected an id");
-            let confirm_deletion = sub_matches.get_one::<bool>("yes").unwrap_or(&false);
-            commands::delete(id, confirm_deletion).expect("Failed to delete command");
+            if let Some(id) = sub_matches.get_one::<String>("id") {
+                let confirm_deletion = sub_matches.get_one::<bool>("yes").unwrap_or(&false);
+                commands::delete(id, confirm_deletion).expect("Failed to delete command");
+            } else {
+                commands::interactive_delete().expect("Failed to delete command interactively");
+            }
         }
         _ => app.print_help().expect("Failed to print help"),
     }

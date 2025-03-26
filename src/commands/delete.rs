@@ -1,8 +1,10 @@
 use std::{ fs, io };
 use colored::*;
-use inquire::Confirm;
+use inquire::{ Confirm, Select };
 
 use crate::{ types::CommandList, utils::padded_println };
+
+use super::get_commands;
 
 /* 
     Delete a specified command from the CommandList
@@ -81,4 +83,46 @@ pub fn delete(id: &str, confirm_deletion: &bool) -> io::Result<()> {
     }
 
     return Ok(());
+}
+
+pub fn interactive_delete() -> io::Result<()> {
+    let command_list = get_commands()?;
+
+    if command_list.commands.is_empty() {
+        padded_println(
+            vec![
+                "⚠️ No commands found".yellow().to_string(),
+                "\n💡 Use 'vaulty save' to add a new command.".yellow().to_string()
+            ]
+        );
+        return Ok(());
+    }
+
+    let options: Vec<String> = command_list.commands
+        .iter()
+        .map(|c| format!("{} - {}", c.command, c.description.italic().bright_blue()))
+        .collect();
+
+    let selection = Select::new(
+        &"👉 Select a command to delete:".yellow().to_string(),
+        options
+    ).prompt();
+
+    match selection {
+        Ok(selected) => {
+            /*  Find the command's ID based on the selected entry */
+            if
+                let Some(command) = command_list.commands
+                    .iter()
+                    .find(|c| { selected.starts_with(&c.command) }) // Match the start of the formatted `${cmd} - ${desc} with the pure command`
+            {
+                delete(&command.id, &false)?;
+            }
+        }
+        Err(_) => {
+            padded_println(vec!["❌ Error occurred while selecting.".red().to_string()]);
+        }
+    }
+
+    Ok(())
 }
