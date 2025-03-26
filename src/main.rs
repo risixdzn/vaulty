@@ -48,6 +48,12 @@ fn main() {
                         .action(clap::ArgAction::SetTrue) // Set 'yes' to true if -y is present
                         .help("Confirm deletion without prompting")
                 )
+        )
+        .subcommand(
+            Command::new("pick")
+                .about("Pick a command from the CommandList, copying it to clipboard.")
+                .alias("copy")
+                .alias("cp")
         );
 
     let matches = app.clone().get_matches();
@@ -79,6 +85,7 @@ fn main() {
                 commands::interactive_delete().expect("Failed to delete command interactively");
             }
         }
+        Some(("pick", _)) => commands::pick().expect("Failed to pick command"),
         _ => app.print_help().expect("Failed to print help"),
     }
 }
