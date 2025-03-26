@@ -1,8 +1,7 @@
 use std::{ fs, io };
 use colored::*;
-use tabled::{ settings::Style, Table };
 
-use crate::{ types::CommandList, utils::padded_println };
+use crate::{ types::CommandList, utils::{ self, padded_println } };
 
 /* 
     Lists all the commands stored in the command list
@@ -42,13 +41,13 @@ pub fn list() -> io::Result<()> {
     }
 
     /* Creates and displays a table with all the commands */
-    let mut table = Table::new(command_list.commands);
-    table.with(Style::rounded());
+
+    let table = utils::render_table(command_list.commands);
 
     padded_println(
         vec![
-            "✔ Your saved commands:".green().to_string(),
-            table.to_string(),
+            "✔ Your saved commands:\n".green().to_string(),
+            table,
             "\n💡 Use 'vaulty pick <id>' to run a specific command.".yellow().to_string()
         ]
     );

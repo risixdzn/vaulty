@@ -1,10 +1,9 @@
 use std::{ fs, io };
 use colored::Colorize;
 use md5::compute;
-use tabled::{ settings::Style, Table };
 use inquire::Text;
 
-use crate::{ types::{ Command, CommandList }, utils::padded_println };
+use crate::{ types::{ Command, CommandList }, utils::{ self, padded_println } };
 
 /* Generates a 6 length hash to reference the commands */
 fn generate_hash(command: &str) -> String {
@@ -39,6 +38,11 @@ pub fn save(command: &str, description: &str) -> io::Result<()> {
         CommandList { commands: Vec::new() }
     };
 
+    if command_list.commands.iter().any(|c| c.command == command) {
+        padded_println(vec!["⚠️ Command already exists".yellow().to_string()]);
+        return Ok(());
+    }
+
     /* Creates and pushes the new object to the command list, writing to the file */
     let new_command = Command {
         id: hash.clone(),
@@ -51,14 +55,12 @@ pub fn save(command: &str, description: &str) -> io::Result<()> {
     let json_data = serde_json::to_string_pretty(&command_list)?;
     fs::write(&file_path, json_data)?;
 
-    /* Creates and displays a table with the new command */
-    let mut table = Table::new(vec![new_command]);
-    table.with(Style::rounded());
+    let table = utils::render_table(vec![new_command]);
 
     padded_println(
         vec![
-            "✔ Command added!".green().to_string(),
-            table.to_string(),
+            "✔ Command added!\n".green().to_string(),
+            table,
             "\n💡 Use 'vaulty list' to see your stored commands.".yellow().to_string()
         ]
     );
