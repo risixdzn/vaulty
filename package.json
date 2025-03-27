@@ -1,6 +1,6 @@
 {
     "name": "vaulty",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "A CLI tool to save, organize, and run your frequently used commands.",
     "keywords": [
         "cli",
@@ -20,8 +20,7 @@
     "scripts": {
         "build": "tsx scripts/build.ts",
         "build-link": "tsx scripts/build.ts && npm link --ignore-scripts",
-        "publish": "npm run build && npm publish",
-        "postinstall": "tsx scripts/postinstall.ts"
+        "publish": "npm run build && npm publish"
     },
     "files": [
         "bin/",
