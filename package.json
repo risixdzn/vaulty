@@ -1,17 +1,33 @@
 {
     "name": "vaulty",
-    "version": "1.0.2",
-    "description": "Save your commands, use them later.",
+    "version": "1.0.3",
+    "description": "A CLI tool to save, organize, and run your frequently used commands.",
+    "keywords": [
+        "cli",
+        "commands",
+        "list",
+        "rust",
+        "command-line",
+        "task-runner",
+        "organizer",
+        "automation",
+        "vaulty"
+    ],
+    "type": "module",
     "bin": {
         "vaulty": "./bin/vaulty.exe"
     },
     "scripts": {
-        "build": "node scripts/build.js",
-        "publish": "npm run build && npm publish"
+        "build": "tsx scripts/build.ts",
+        "build-link": "tsx scripts/build.ts && npm link --ignore-scripts",
+        "publish": "npm run build && npm publish",
+        "postinstall": "tsx scripts/postinstall.ts"
     },
     "files": [
         "bin/",
-        "README.md"
+        "src/",
+        "scripts/",
+        "readme.md"
     ],
     "os": [
         "win32"
@@ -23,5 +39,9 @@
     "homepage": "https://vaulty.ricardo.gg",
     "engines": {
         "node": ">=12"
+    },
+    "dependencies": {
+        "@types/node": "^22.13.13",
+        "tsx": "^4.19.3"
     }
 }
